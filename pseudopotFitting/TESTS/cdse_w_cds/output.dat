@@ -1,0 +1,71 @@
+Thu Aug  2 14:47:34 2018
+
+
+***************************************************************
+
+The best mean squared error found was:  42.26766
+
+Band structure 0
+
+Cd  0.18922397  0.93339300  0.20055019  1.67770195
+Cd  0.18922397  0.93339300  0.20055019  1.67770195
+Se -0.02959997  4.39428774 -1.19687622  0.31907282
+Se -0.02959997  4.39428774 -1.19687622  0.31907282
+
+Band structure 1
+
+Cd  0.19123364  0.93339300  0.20055019  1.67770195
+Se -0.02991434  4.39428774 -1.19687622  0.31907282
+
+Band structure 2
+
+Cd  0.21337793  0.93339300  0.20055019  1.67770195
+Cd  0.21337793  0.93339300  0.20055019  1.67770195
+S -0.03022639  4.36202917 -1.21329169  0.27815908
+S -0.03022639  4.36202917 -1.21329169  0.27815908
+
+***************************************************************
+
+INPUT
+
+The number of band structures fit to was: 3
+The total number of iterations was: 10
+The beta used was:  200.0
+
+The atoms were place at the following positions:
+
+Cd 2.03097 1.17258 5.80399
+Cd -2.03097 -1.17258 -0.82914
+Se 2.03097 1.17258 0.82914
+Se -2.03097 -1.17258 -5.80399
+Cd 1.43107 1.43107 1.43107
+Se -1.43107 -1.43107 -1.43107
+Cd 1.95125 1.12655 5.57616
+Cd -1.95125 -1.12655 -0.79659
+S 1.95125 1.12655 0.79659
+S -1.95125 -1.12655 -5.57616
+
+Band structure 0
+The number of atoms in the cell was: 4
+The number of bands calculated was: 16
+The number of k-points that were used to fit the pseudopotentials to was: 42
+The maximum kinetic energy was:  8.140
+The number of basis functions used was: 819
+
+Band structure 1
+The number of atoms in the cell was: 2
+The number of bands calculated was: 8
+The number of k-points that were used to fit the pseudopotentials to was: 20
+The maximum kinetic energy was:  8.300
+The number of basis functions used was: 387
+
+Band structure 2
+The number of atoms in the cell was: 4
+The number of bands calculated was: 16
+The number of k-points that were used to fit the pseudopotentials to was: 35
+The maximum kinetic energy was:  8.140
+The number of basis functions used was: 673
+
+
+***************************************************************
+

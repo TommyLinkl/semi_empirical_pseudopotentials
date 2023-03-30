@@ -1,0 +1,48 @@
+Wed Aug  8 18:24:09 2018
+
+Cell 0 volume = 375.13616804
+Cell 0 volPerAtom = 187.56808402
+Cell 0 normalizedVolPerAtom = 1.00000000
+
+Cell 1 volume = 332.23924830
+Cell 1 volPerAtom = 166.11962415
+Cell 1 normalizedVolPerAtom = 1.12911455
+
+
+***************************************************************
+
+Initial pseudopotentials:
+
+Band structure 0
+
+Cd  0.04057046  1.10826436  0.00177802  1.54192937
+Se -0.07488308  4.52067043 -1.50585649  0.51516737
+
+Band structure 1
+
+Cd  0.04580870  1.10826436  0.00177802  1.54192937
+S -0.04023494  4.37577660 -1.24489227  0.30178957MSE in bandStructure[0] = 0.019007
+MSE in bandStructure[1] = 0.086346
+MSE in bandStructure[0] = 0.015907
+MSE in bandStructure[1] = 0.080436
+MSE in bandStructure[0] = 0.019007
+MSE in bandStructure[1] = 0.086346
+
+
+***************************************************************
+
+The best mean squared error found was:  0.05268
+
+Band structure 0
+
+Cd  0.04057046  1.10826436  0.00177802  1.54192937
+Se -0.07488308  4.52067043 -1.50585649  0.51516737
+
+Band structure 1
+
+Cd  0.04580870  1.10826436  0.00177802  1.54192937
+S -0.04023494  4.37577660 -1.24489227  0.30178957
+
+***************************************************************
+
+Wed Aug  8 18:24:16 2018

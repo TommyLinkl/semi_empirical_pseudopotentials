@@ -1,0 +1,12 @@
+nAtoms = 4
+nElectrons = 16
+nKPoints = 42
+maxKE = 8.14
+nAtoms = 2
+nElectrons = 8
+nKPoints = 20
+maxKE = 8.3
+nAtoms = 4
+nElectrons = 16
+nKPoints = 35
+maxKE = 8.14

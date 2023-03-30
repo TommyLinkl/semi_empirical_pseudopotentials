@@ -1,0 +1,7 @@
+natoms = 4 
+nbands = 32
+maxke = 13.14
+niterations = 0
+nkpoints = 42
+beta = 100.0
+stepsize = 0.001

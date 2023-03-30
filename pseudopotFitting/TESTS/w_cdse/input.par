@@ -1,0 +1,8 @@
+nBandStructures = 1
+nAtoms = 4
+nElectrons = 16
+maxKE = 5.14
+nIterations = 100
+nKPoints = 42
+beta = 100.0
+stepSize = 0.001

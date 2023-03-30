@@ -1,0 +1,39 @@
+Thu Aug  2 16:09:16 2018
+
+
+***************************************************************
+
+The best mean squared error found was:  0.07949
+
+Band structure 0
+
+Cd  0.21846619  0.93416310  0.19594363  1.67888915
+Cd  0.21846619  0.93416310  0.19594363  1.67888915
+S -0.03213417  4.36626628 -1.20960078  0.28110846
+S -0.03213417  4.36626628 -1.20960078  0.28110846
+
+***************************************************************
+
+INPUT
+
+The number of band structures fit to was: 1
+The total number of iterations was: 10
+The beta used was:  100.0
+
+The atoms were place at the following positions:
+
+Cd 1.95125 1.12655 5.57616
+Cd -1.95125 -1.12655 -0.79659
+S 1.95125 1.12655 0.79659
+S -1.95125 -1.12655 -5.57616
+
+Band structure 0
+The number of atoms in the cell was: 4
+The number of bands calculated was: 16
+The number of k-points that were used to fit the pseudopotentials to was: 35
+The maximum kinetic energy was:  5.140
+The number of basis functions used was: 359
+
+
+***************************************************************
+

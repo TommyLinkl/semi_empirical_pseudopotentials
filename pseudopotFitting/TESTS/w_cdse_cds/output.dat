@@ -1,0 +1,59 @@
+Thu Aug  2 17:11:26 2018
+
+
+***************************************************************
+
+The best mean squared error found was:  0.10511
+
+Band structure 0
+
+Cd  0.19350102  0.93547561  0.19251815  1.67483343
+Cd  0.19350102  0.93547561  0.19251815  1.67483343
+Se -0.02923052  4.39706176 -1.19890734  0.31646915
+Se -0.02923052  4.39706176 -1.19890734  0.31646915
+
+Band structure 1
+
+Cd  0.21820093  0.93547561  0.19251815  1.67483343
+Cd  0.21820093  0.93547561  0.19251815  1.67483343
+S -0.03212643  4.37120189 -1.20536194  0.28500079
+S -0.03212643  4.37120189 -1.20536194  0.28500079
+
+***************************************************************
+
+INPUT
+
+The number of band structures fit to was: 2
+The total number of iterations was: 1000
+The beta used was:  100.0
+
+The atoms were place at the following positions:
+
+Cd 2.03097 1.17258 5.80399
+Cd -2.03097 -1.17258 -0.82914
+Se 2.03097 1.17258 0.82914
+Se -2.03097 -1.17258 -5.80399
+Cd 1.95125 1.12655 5.57616
+Cd -1.95125 -1.12655 -0.79659
+S 1.95125 1.12655 0.79659
+S -1.95125 -1.12655 -5.57616
+ 0.00000 0.00000 0.00000
+ 0.00000 0.00000 0.00000
+
+Band structure 0
+The number of atoms in the cell was: 4
+The number of bands calculated was: 16
+The number of k-points that were used to fit the pseudopotentials to was: 42
+The maximum kinetic energy was:  5.140
+The number of basis functions used was: 377
+
+Band structure 1
+The number of atoms in the cell was: 4
+The number of bands calculated was: 16
+The number of k-points that were used to fit the pseudopotentials to was: 35
+The maximum kinetic energy was:  5.140
+The number of basis functions used was: 359
+
+
+***************************************************************
+

@@ -1,0 +1,39 @@
+#PBS -l nodes=1:ppn=16:rabbit
+#PBS -l mem=124g
+#PBS -r n
+#PBS -q default
+
+hostname
+cd $PBS_O_WORKDIR
+
+# Defining the necessary paths to the executables and pseudopotential files
+cwd=$(pwd)
+executableBaseDir="/home/jphilbin/programs/semi_empirical_pseudopotentials"
+fitXDir="$executableBaseDir/pseudopotFitting"
+calcDir="${cwd/home/scratch}"
+
+# Makes input and output directories
+
+for i in {1..50}; do 
+  if [ ! -d "$cwd/run_$i" ]; then
+    sFitDir="$calcDir/run_$i"
+    hFitDir="$cwd/run_$i"
+    mkdir -p $sFitDir
+    mkdir -p $hFitDir
+    break  
+  fi
+done
+
+# Copy in executables, pseudopotentials, expot.par, and conf.par 
+cp $cwd/*.par $sFitDir/
+cp $cwd/*.par $hFitDir/
+cp $fitXDir/fit.x $sFitDir/
+
+# Run the fitting calculation
+cd $sFitDir/                                 
+./fit.x > run.dat                           
+sed -i "2i$HOSTNAME" run.dat
+cp *.dat $hFitDir/  
+
+# Clean up scratch directories
+rm -r $sFitDir

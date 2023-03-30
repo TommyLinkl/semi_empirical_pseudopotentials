@@ -1,0 +1,71 @@
+*****************************************************************************
+
+CdSe Wurtzite HOMO energy/ negative of the work function:
+
+Commands run in ~/research_projects/pseudopotentials/cdse/fits/
+
+jphilbin@pippen:cdse_w_cds$ awk -v g=1000 '{if($10-$9<g){h=$9; l=$10; g=$10-$9}}END{print h" "l" "g}' expBandStruct_0.par 
+-6.29 -4.4099 1.8801
+
+Therefore: CdSe (w): IP = 6.29, EA = 4.41, Eg = 1.88
+
+*****************************************************************************
+
+CdSe zinc blende HOMO energy/ negative of the work function:
+
+Commands run in ~/research_projects/pseudopotentials/cdses/cdse_w_cds
+
+jphilbin@pippen:cdse_w_cds$ awk -v g=1000 '{if($6-$5<g){h=$5; l=$6; g=$6-$5}}END{print h" "l" "g}' expBandStruct_1.par
+-5.96877 -4.12346 1.84531
+
+Therefore: CdSe (zb): IP = 5.97, EA = 4.12, Eg = 1.845
+
+*****************************************************************************
+
+CdS wurtzite HOMO energy/ negative of the work function:
+
+Commands run in ~/research_projects/pseudopotentials/cdses/cdse_w_cds:
+
+jphilbin@pippen:cdse_w_cds$ awk -v g=1000 '{if($10-$9<g){h=$9; l=$10; g=$10-$9}}END{print h" "l" "g}' expBandStruct_2.par 
+-6.91059 -4.40166 2.50893
+
+Therefore: CdS (w): IP = 6.91, EA = 4.40, Eg = 2.51
+
+*****************************************************************************
+
+CdS zinc blende HOMO energy/ negative of the work function:
+
+Commands run in ~/research_projects/pseudopotentials/cdses/cdse_cds:
+
+jphilbin@pippen:cdse_cds$ awk -v g=1000 '{if($6-$5<g){h=$5; l=$6; g=$6-$5}}END{print h" "l" "g}' expBandStruct_3.par
+XXXX XXXXX XXXX
+
+Therefore: CdS (zb): IP = X.XX, EA = X.XX, Eg = X.XX 
+
+*****************************************************************************
+
+from 95_PRB_Zunger_LocalDensityDerivedPseudopotentials:
+
+work function for CdSe (wurtzite): -6.29 for LDA -> exp -5.35 and -6.89
+
+*****************************************************************************
+
+from IonizationPotentials_CdS_CdSe_ZnS_ZnSe:
+
+CdS:  IP = 7.15, EA = 4.70, Eg = 2.45 -> other exp: IP = 7.26, EA = 4.66, Eg = 2.60
+CdSe: IP = 6.38, EA = 4.70, Eg = 1.68 -> other exp: IP = 6.62, EA = 4.87, Eg = 1.75
+
+*****************************************************************************
+
+from AbsoluteEnergyLevelsSemiconductors:
+
+CdS: ElecNeg: 5.18, Eg = 2.40, Ecb = -3.98 -> Evb = -6.38
+
+*****************************************************************************
+
+from 87_PRB_Himpsel_WorkFunctionCdSeCdSCdTe:
+
+CdS:  Eg = 2.58, Phi0 = 7.2, WF = 4.79, Ef-Evb = 2.41 -> Evb = -7.2
+CdSe: Eg = 1.98, Phi0 = 6.6, WF = 5.25, Ef-Evb = 1.25 -> Evb = -6.6
+
+*****************************************************************************

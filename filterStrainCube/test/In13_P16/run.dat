@@ -1,0 +1,128 @@
+Mon Mar  6 14:12:36 2023
+
+******************************************************************************
+
+Number of atoms in the system, natom = 65
+Number of grid points used: nx = 36  ny = 36  nz = 36
+Number of states per filter, ms = 10
+Number of filter cycles, ns = 16
+Length of Newton interpolation used, nc = 1024
+Target energy for HOMO state = -0.2300
+Target energy for LUMO state = -0.0500
+Kinetic energy maximum =  10.00
+Number of openMP threads used = 6
+Crystal structure type is set to zincblende
+Outmost material type is set to InP
+No expot.par file detected in cwd - setting external potential to 0!
+Box (quadrant) dimensions: xd = 14.00 yd = 14.00 zd = 14.00
+Grid point spacing: dx = 0.7778 dy = 0.7778 dz = 0.7778 dv = 0.470508 dr = 1.347151
+Number of atom types = 17
+ntype = 17
+Warning: no potCd_a5.par file... setting a5 to 0.
+Warning: no potIn_a5.par file... setting a5 to 0.
+Warning: no potAs_a5.par file... setting a5 to 0.
+Warning: no potSi_a4.par file... setting a4 to 0.
+Warning: no potSi_a5.par file... setting a5 to 0.
+Warning: no potH_a4.par file... setting a4 to 0.
+Warning: no potH_a5.par file... setting a5 to 0.
+Warning: no potZn_a4.par file... setting a4 to 0.
+Warning: no potZn_a5.par file... setting a5 to 0.
+Warning: no potS_a5.par file... setting a5 to 0.
+Warning: no potP1_a4.par file... setting a4 to 0.
+Warning: no potP1_a5.par file... setting a5 to 0.
+Warning: no potP2_a4.par file... setting a4 to 0.
+Warning: no potP2_a5.par file... setting a5 to 0.
+Warning: no potP3_a4.par file... setting a4 to 0.
+Warning: no potP3_a5.par file... setting a5 to 0.
+Warning: no potP4_a4.par file... setting a4 to 0.
+Warning: no potP4_a5.par file... setting a5 to 0.
+Warning: no potTe_a4.par file... setting a4 to 0.
+Warning: no potTe_a5.par file... setting a5 to 0.
+Warning: no potCdz_a4.par file... setting a4 to 0.
+Warning: no potCdz_a5.par file... setting a5 to 0.
+Warning: no potSez_a4.par file... setting a4 to 0.
+Warning: no potSez_a5.par file... setting a5 to 0.
+Warning: no potP_a5.par file... setting a5 to 0.
+Potential energy statistics: dV = 2.80582 Vmin = -1.44656 Vmax = 1.35926
+dT = 24.4726
+nn = 0
+homo = -1 lumo = 0
+dE = 13.3627
+done calculate energy range, CPU time (sec) 1.49, wall run time (sec) 0
+nc = 1024 dt = 939.57 dE = 13.3627
+seed = -1131359211
+done calculating filter, CPU time (sec) 75.87, wall run time (sec) 14
+par.dv = 0.470508 
+info = 0
+cutoff is 158
+mstot ortho = 158
+done calculating ortho, CPU time (sec) 0.53, wall run time (sec) 1
+done calculating Hmat, CPU time (sec) 2.33, wall run time (sec) 1
+
+******************************************************************************
+
+Mon Mar  6 14:12:57 2023
+Mon Mar  6 14:15:18 2023
+
+******************************************************************************
+
+Number of atoms in the system, natom = 65
+Number of grid points used: nx = 36  ny = 36  nz = 36
+Number of states per filter, ms = 10
+Number of filter cycles, ns = 16
+Length of Newton interpolation used, nc = 1024
+Target energy for HOMO state = -0.2300
+Target energy for LUMO state = -0.0500
+Kinetic energy maximum =  10.00
+Number of openMP threads used = 6
+Crystal structure type is set to zincblende
+Outmost material type is set to InP
+No expot.par file detected in cwd - setting external potential to 0!
+Box (quadrant) dimensions: xd = 14.00 yd = 14.00 zd = 14.00
+Grid point spacing: dx = 0.7778 dy = 0.7778 dz = 0.7778 dv = 0.470508 dr = 1.347151
+Number of atom types = 17
+ntype = 17
+Warning: no potCd_a5.par file... setting a5 to 0.
+Warning: no potIn_a5.par file... setting a5 to 0.
+Warning: no potAs_a5.par file... setting a5 to 0.
+Warning: no potSi_a4.par file... setting a4 to 0.
+Warning: no potSi_a5.par file... setting a5 to 0.
+Warning: no potH_a4.par file... setting a4 to 0.
+Warning: no potH_a5.par file... setting a5 to 0.
+Warning: no potZn_a4.par file... setting a4 to 0.
+Warning: no potZn_a5.par file... setting a5 to 0.
+Warning: no potS_a5.par file... setting a5 to 0.
+Warning: no potP1_a4.par file... setting a4 to 0.
+Warning: no potP1_a5.par file... setting a5 to 0.
+Warning: no potP2_a4.par file... setting a4 to 0.
+Warning: no potP2_a5.par file... setting a5 to 0.
+Warning: no potP3_a4.par file... setting a4 to 0.
+Warning: no potP3_a5.par file... setting a5 to 0.
+Warning: no potP4_a4.par file... setting a4 to 0.
+Warning: no potP4_a5.par file... setting a5 to 0.
+Warning: no potTe_a4.par file... setting a4 to 0.
+Warning: no potTe_a5.par file... setting a5 to 0.
+Warning: no potCdz_a4.par file... setting a4 to 0.
+Warning: no potCdz_a5.par file... setting a5 to 0.
+Warning: no potSez_a4.par file... setting a4 to 0.
+Warning: no potSez_a5.par file... setting a5 to 0.
+Warning: no potP_a5.par file... setting a5 to 0.
+Potential energy statistics: dV = 2.80582 Vmin = -1.44656 Vmax = 1.35926
+dT = 24.4726
+nn = 0
+homo = -1 lumo = 0
+dE = 13.3627
+done calculate energy range, CPU time (sec) 1.36, wall run time (sec) 0
+nc = 1024 dt = 939.57 dE = 13.3627
+seed = -500037525
+done calculating filter, CPU time (sec) 73.95, wall run time (sec) 14
+par.dv = 0.470508 
+info = 0
+cutoff is 158
+mstot ortho = 158
+done calculating ortho, CPU time (sec) 1.46, wall run time (sec) 0
+done calculating Hmat, CPU time (sec) 2.31, wall run time (sec) 2
+
+******************************************************************************
+
+Mon Mar  6 14:15:35 2023
