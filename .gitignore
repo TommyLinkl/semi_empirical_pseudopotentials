@@ -54,3 +54,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+Eran_old_filter/
+Eran_old_filter_writeCube/
