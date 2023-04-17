@@ -12,7 +12,7 @@ Linux_DYLIB = -shared-intel -Wl,--start-group /opt/intel/oneapi/mkl/latest/lib/i
 LIB = $(${OS}_DYLIB) $(${OS}_LIB) $(${OS}_CLIB) $(${OS}_FCLIB) $(${OS}_MYLIB)
 
 # flags 
-Linux_OPTFLAGS = -fast -w -DMKL_ILP64 -xSSE3
+Linux_OPTFLAGS = -fast -w # -DMKL_ILP64 -xSSE3
 Linux_CFLAGS = $(${OS}_OPTFLAGS) -qopenmp
 Linux_FFLAGS = $(${OS}_OPTFLAGS)
 

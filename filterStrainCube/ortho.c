@@ -14,8 +14,8 @@ long portho(double *psi,double dv,long_st ist)
 	long long ngrid = (long long)ist.ngrid, mstot = (long long)ist.mstot;
 	double *work, *S, *vt;
 	long *iwork;
-	MKL_INT info=0;
-	// long long info=0;
+	// MKL_INT info=0;
+	long long info=0;
 
 	// ORIGINAL memory allocations
 	lwork = 5*(long long)(ist.mstot*ist.mstot+ist.ngrid);

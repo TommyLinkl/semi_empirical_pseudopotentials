@@ -180,7 +180,7 @@ long writeIntTwoQPStructuresToFiles(intTwoQPState *intTwoQP, long nNonintTwoQPSt
 
 void writeCubeFile(double *rho, grid rSpaceGrid, char *fileName) {
   FILE *pf, *pConfFile;
-  long iGrid, iX, iY, iZ, iYZ, nAtoms, atomType;
+  long iGrid, iX, iY, iZ, iYZ, iXY, nAtoms, atomType;
   double x, y, z;
   char line[80], atomSymbol[10];
 
@@ -231,6 +231,9 @@ void writeCubeFile(double *rho, grid rSpaceGrid, char *fileName) {
     else if (! strcmp(atomSymbol, "In")) {
 	  atomType = 49;
     }
+    else if (! strcmp(atomSymbol, "Ga")) {
+    atomType = 31;
+    }
     else { 
       atomType = 1; 
     }
@@ -238,13 +241,12 @@ void writeCubeFile(double *rho, grid rSpaceGrid, char *fileName) {
 	//fprintf(pf, "%5i%12.6f%12.6f%12.6f%12.6f\n", atomType, 0.0, x-rSpaceGrid.minPos.x, 
 	//		y-rSpaceGrid.minPos.y, z-rSpaceGrid.minPos.z);
   }
-  //for (iZ = 0; iZ < rSpaceGrid.nGridPointsZ; iZ++) {
+
   for (iX = 0; iX < rSpaceGrid.nGridPointsX; iX++) {
     for (iY = 0; iY < rSpaceGrid.nGridPointsY; iY++) {
-	  for (iZ = 0; iZ < rSpaceGrid.nGridPointsZ; iZ++) {
-	    iYZ = rSpaceGrid.nGridPointsX * (rSpaceGrid.nGridPointsY * iZ + iY);
-      //for (iX = 0; iX < rSpaceGrid.nGridPointsX; iX++) {
-        iGrid = iYZ + iX;
+      iXY = rSpaceGrid.nGridPointsZ * (rSpaceGrid.nGridPointsY * iX + iY);
+	    for (iZ = 0; iZ < rSpaceGrid.nGridPointsZ; iZ++) {
+        iGrid = iXY + iZ;
         fprintf(pf, "%g ", rho[iGrid]);
         if (iX % 6 == 5) {
           fprintf(pf, "\n");

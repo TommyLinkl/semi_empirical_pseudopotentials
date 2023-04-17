@@ -691,6 +691,7 @@ void read_pot(double *vr, double *pot, long *nPot, double *dr, atm_st *atm, long
       Cdz = 13
       Sez = 14
       P = 15
+      Ga = 16
   */
 
   for (j = 0; j < ntype*n; j++) pot[j] = vr[j] = 0;
@@ -698,8 +699,8 @@ void read_pot(double *vr, double *pot, long *nPot, double *dr, atm_st *atm, long
   
   for (j = 0; j < ntype; j++){
     assign_atom_type(atype,j);
-    if ((j==5) || (j==7)) sprintf (str,"pot%c.par",atype[0]);
-    else if (j <= 12) sprintf (str,"pot%c%c.par",atype[0],atype[1]);
+    if ((j==5) || (j==7) || (j==15)) sprintf (str,"pot%c.par",atype[0]);
+    else if ((j <= 12) || (j==16)) sprintf (str,"pot%c%c.par",atype[0],atype[1]);
     else sprintf (str,"pot%c%c%c.par",atype[0],atype[1],atype[2]);
     pf = fopen(str , "r");
     if (pf != NULL){
@@ -723,8 +724,8 @@ void read_pot(double *vr, double *pot, long *nPot, double *dr, atm_st *atm, long
     }
       
     /*** print shifted pot ***/
-    if ((j==5) || (j==7)) sprintf (str,"pot%c.dat",atype[0]);
-    else if (j <= 12) sprintf (str,"pot%c%c.dat",atype[0],atype[1]);
+    if ((j==5) || (j==7) || (j==15)) sprintf (str,"pot%c.dat",atype[0]);
+    else if ((j <= 12) || (j==16)) sprintf (str,"pot%c%c.dat",atype[0],atype[1]);
     else sprintf (str,"pot%c%c%c.dat",atype[0],atype[1],atype[2]);
     //sprintf (str,"pot%s.dat",atype);
     pf = fopen(str , "w");
@@ -759,6 +760,7 @@ long assign_atom_number(char atyp[3])
   else if ((atyp[0] == 'S') && (atyp[1] == 'e') && (atyp[2] == 'z')) return(14);
   else if ((atyp[0] == 'P') && (atyp[1] == '\0') && (atyp[2] == '\0'))  return(15);
   else if ((atyp[0] == 'P') && (atyp[1] == '\0'))  return(15);
+  else if ((atyp[0] == 'G') && (atyp[1] == 'a') && (atyp[2] == '\0'))  return(16);
   else {
     sprintf (strerror,"atom type %s not in current list",atyp);
     memoryError (strerror);
@@ -786,6 +788,7 @@ void assign_atom_type(char *atyp, long j)
   else if (j == 13) {atyp[0] = 'C'; atyp[1] = 'd'; atyp[2] = 'z';}
   else if (j == 14) {atyp[0] = 'S'; atyp[1] = 'e'; atyp[2] = 'z';}
   else if (j == 15) {atyp[0] = 'P'; atyp[1] = '\0'; atyp[2] = '\0';}
+  else if (j == 16) {atyp[0] = 'G'; atyp[1] = 'a'; atyp[2] = '\0';}
   return;
 }
 

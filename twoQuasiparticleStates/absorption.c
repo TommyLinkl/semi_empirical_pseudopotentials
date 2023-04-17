@@ -275,6 +275,7 @@ long calcRadiativeLifetimesElecDipoleApprox(vector *intElecDipMoment, vector *el
 	zeroDoubleArray(emissionIntensity, nEmissionBins);
 	zeroDoubleArray(absorptionIntensity, nEmissionBins);
 	pf = fopen("intRadiativeLifetimes.dat", "w");
+	fprintf(pf, "#iwoQD  eTwoQP[au]   eTwoQP[eV]   eTwoQP[nm]    totalRadiativeLifetime    radLifetime.x   radLifetime.y    radLifetime.z\n");
 	lowestEnergy = intTwoQP[0].energy;
 	partitionFunction = 0.0;
 	boltzWeightedRadiativeRate = 0.0;
@@ -287,9 +288,8 @@ long calcRadiativeLifetimesElecDipoleApprox(vector *intElecDipMoment, vector *el
 		radLifetime.y = tmp / sqr(intElecDipMoment[iIntTwoQP].y);
 		radLifetime.z = tmp / sqr(intElecDipMoment[iIntTwoQP].z);
 		totalRadiativeLifetime = tmp / sqr(intElecDipMoment[iIntTwoQP].mag);
-                totalAbsorptionCrossSection = tmp * sqr(energy) / sqr(intElecDipMoment[iIntTwoQP].mag);
-		fprintf(pf, "%5ld % .8f % .8f %.2f  %4.5f  %g  %g  %g\n", iIntTwoQP, energy, energy*AUTOEV, AUTOLAMBDANM/energy, 
-							totalRadiativeLifetime, radLifetime.x, radLifetime.y, radLifetime.z);
+		totalAbsorptionCrossSection = tmp * sqr(energy) / sqr(intElecDipMoment[iIntTwoQP].mag);
+		fprintf(pf, "%5ld % .8f % .8f %.2f  %4.5f  %g  %g  %g\n", iIntTwoQP, energy, energy*AUTOEV, AUTOLAMBDANM/energy, totalRadiativeLifetime, radLifetime.x, radLifetime.y, radLifetime.z);
 		tmp = exp(-beta * (energy - lowestEnergy));
 		partitionFunction += tmp;
 		boltzWeightedRadiativeRate += tmp/totalRadiativeLifetime;
