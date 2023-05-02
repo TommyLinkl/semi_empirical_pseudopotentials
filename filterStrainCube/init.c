@@ -22,8 +22,8 @@ void init_size(long argc, char *argv[],par_st *par,long_st *ist)
 	fscanf (pf,"%lg",&par->Elmin); /***minimum energy ***/
 	fscanf (pf,"%lg",&par->Elmax); /*** maximum energy ***/
 	fscanf (pf,"%ld",&ist->nthreads); /*** number of threads ***/
-	fscanf (pf,"%s", &ist->crystalStructure); /*** wurtzite or zincblende ***/
-	fscanf (pf,"%s", &ist->outmostMaterial); /*** CdS, CdSe, InP, InAs, alloyInGaP, alloyInGaAs ***/
+	fscanf (pf,"%s", ist->crystalStructure); /*** wurtzite or zincblende ***/
+	fscanf (pf,"%s", ist->outmostMaterial); /*** CdS, CdSe, InP, InAs, alloyInGaP, alloyInGaAs ***/
 	fclose(pf);
 
 	pf = fopen("conf.par" , "r");
@@ -301,11 +301,12 @@ void readNearestNeighbors(long nAtoms, int crystalStructure, vector *atomNeighbo
 	FILE *pf;
 	long iAtom, at_natyp, *neighbors_natyp; 
 	char at[4], n1[4], n2[4], n3[4], n4[4];
+	char strerror[200];
 	int tmpi, numSe, numS, numCd, numAs, numIn, numP, numGa;
 	double tmpx, tmpy, tmpz;
 	double *bondLengths; 
 	if ((neighbors_natyp = (long*)calloc(4,sizeof(double)))==NULL)nerror("neighbors_natyp");
-	if ((bondLengths = (long*)calloc(4,sizeof(double)))==NULL)nerror("bondLengths");
+	if ((bondLengths = (double*)calloc(4,sizeof(double)))==NULL)nerror("bondLengths");
 	
 	if ( access("allNeighborBonds.par", F_OK) != -1 ) {
 		
@@ -330,19 +331,24 @@ void readNearestNeighbors(long nAtoms, int crystalStructure, vector *atomNeighbo
 	
 	// adjust positions of passivation ligands
 	if (! strcmp(n3, "P1")) {
-		strcpy(n3, &n2);
+		strcpy(n3, n2);
 		atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1.0/0.55);
 	}
 	if (! strcmp(n4, "P1")) {
-		strcpy(n4, &n2);
+		strcpy(n4, n2);
 		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.55);
 	}
 	if (! strcmp(n3, "P2") && ! strcmp(n4, "P2")) {
-		atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.25);
-		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.25);
+		// atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.25);
+		// atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.25);
+		// Just for Eran's old geometry
+		atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.30);
+		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.30);
 	}
 	else if (! strcmp(n4, "P2")) {
-		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.30);
+		// atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.30);
+		// Just for Eran's old geometry
+		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.40);
 	}
 	
 	at_natyp = assign_atom_number(at);
@@ -358,31 +364,31 @@ void readNearestNeighbors(long nAtoms, int crystalStructure, vector *atomNeighbo
 			if ((outmostMaterial==0) && (at_natyp==0)) neighbors_natyp[iNeighbor]=7; // CdS, Center-Cd, Replace with S. 
 			else if ((outmostMaterial==0) && (at_natyp==7)) neighbors_natyp[iNeighbor]=0; // CdS, Center-S, Replace with Cd. 
 			else if ((outmostMaterial==0) && (at_natyp!=0) && (at_natyp!=7)) {
-				sprintf(strerror,"Outmost layer is input as %d, but atom type %d is bonded to passivation ligands\n", outmostMaterial, at_natyp); 
-				nerror (strerror);
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp); 
+				nerror(strerror);
 			} 
 			else if ((outmostMaterial==1) && (at_natyp==0)) neighbors_natyp[iNeighbor]=1; // CdSe, Center-Cd, Replace with Se. 
 			else if ((outmostMaterial==1) && (at_natyp==1)) neighbors_natyp[iNeighbor]=0; // CdSe, Center-Se, Replace with Cd. 
 			else if ((outmostMaterial==1) && (at_natyp!=0) && (at_natyp!=1)) {
-				sprintf(strerror,"Outmost layer is input as %d, but atom type %d is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
 				nerror (strerror);
 			}
 			else if ((outmostMaterial==2) && (at_natyp==2)) neighbors_natyp[iNeighbor]=16; // InP, Center-In, Replace with P. 
 			else if ((outmostMaterial==2) && (at_natyp==16)) neighbors_natyp[iNeighbor]=2; // InP, Center-P, Replace with In. 
 			else if ((outmostMaterial==2) && (at_natyp!=2) && (at_natyp!=16)) {
-				sprintf(strerror,"Outmost layer is input as %d, but atom type %d is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
 				nerror (strerror);
 			}
 			else if ((outmostMaterial==3) && (at_natyp==2)) neighbors_natyp[iNeighbor]=3; // InAs, Center-In, Replace with As. 
 			else if ((outmostMaterial==3) && (at_natyp==3)) neighbors_natyp[iNeighbor]=2; // InAs, Center-As, Replace with In. 
 			else if ((outmostMaterial==3) && (at_natyp!=2) && (at_natyp!=3)) {
-				sprintf(strerror,"Outmost layer is input as %d, but atom type %d is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
 				nerror (strerror);
 			}
 			else if ((outmostMaterial==4) && ((at_natyp==2)||(at_natyp==15))) neighbors_natyp[iNeighbor]=16; // Outmost: alloyInGaP; Center: In or Ga. Replace with P. 
 			else if ((outmostMaterial==4) && (at_natyp==16)) neighbors_natyp[iNeighbor]=2; // Outmost: alloyInGaP; Center: P. Replace with In. This is a completely random choice. 
 			else if ((outmostMaterial==4) && (at_natyp!=2) && (at_natyp!=15) && (at_natyp!=16)) {
-				sprintf(strerror,"Outmost layer is input as %d, but atom type %d is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
 				nerror (strerror);
 			}
 			else if ((outmostMaterial==5) && ((at_natyp==2)||(at_natyp==15))) neighbors_natyp[iNeighbor]=3; // Outmost: alloyInGaAs; Center: In or Ga. Replace with As. 

@@ -6,6 +6,7 @@
 #include <malloc.h>
 #include <sys/time.h>
 #include <time.h>
+#include <time.h>
 #include <assert.h>
 #include <fftw3.h>
 #include <omp.h>
@@ -130,7 +131,9 @@ void check_function(zomplex *an,zomplex *samp,long_st ist,par_st par,double El);
 void reorder(long *,long);
 long write_psi(double *,double *,double *,double *,double *,long,long,par_st);
 void write_pot(double *,double *,double *,double *);
-// void writeCubeFile(double *rho, par_st par, long_st ist, char *fileName);
+void writeCubeFile(double *rho, double xmin, double ymin, double zmin, double dx, double dy, double dz, long nx, long ny, long nz); 
+void writeCurrentTime(FILE *pf);
+void writeSeparation(FILE *pf);
 
 void scalar_product(zomplex *,zomplex *,zomplex *,double,long,long);
 

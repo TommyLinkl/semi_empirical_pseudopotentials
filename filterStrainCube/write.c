@@ -13,7 +13,7 @@ void writeCurrentTime(FILE *pf) {
   time_t startTime;
 
   startTime = time(NULL);
-  fprintf(pf, ctime(&startTime));
+  fprintf(pf, "%s\n", ctime(&startTime));
 
   return;
 }
@@ -49,7 +49,7 @@ void writeCubeFile(double *rho, double xmin, double ymin, double zmin,
     
     fgets(line, 80, pConfFile); 
     while(fgets(line, 80, pConfFile) != NULL) {
-        sscanf(line, "%2s %lf %lf %lf %d %*lf", &atomSymbol, &x, &y, &z, &atomType);
+        sscanf(line, "%2s %lf %lf %lf %ld %*lf", atomSymbol, &x, &y, &z, &atomType);
         if (! strcmp(atomSymbol, "Cd")) { 
             atomType = 48;
         }
@@ -95,7 +95,7 @@ void writeCubeFile(double *rho, double xmin, double ymin, double zmin,
         else { 
             atomType = 1; 
         }
-        fprintf(pf, "%5i%12.6f%12.6f%12.6f%12.6f\n", atomType, 0.0, x, y, z);
+        fprintf(pf, "%5li%12.6f%12.6f%12.6f%12.6f\n", atomType, 0.0, x, y, z);
     }
     
     for (iX = 0; iX < nx; iX++) {

@@ -277,9 +277,15 @@ int main(int argc, char *argv[]) {
     my  = (double *) calloc(ist.totallumo*ist.totalhomo, sizeof(double)); // <psi_i|my|psi_a>
     mz  = (double *) calloc(ist.totallumo*ist.totalhomo, sizeof(double)); // <psi_i|mz|psi_a>
     rs  = (double *) calloc(ist.totallumo*ist.totalhomo, sizeof(double)); // <psi_a|u|psi_i>.<psi_a|m|psi_i>
+    // px_ni  = (double *) calloc(ist.totallumo+ist.totalhomo, sizeof(double)); // <psi|px|psi>
+    // py_ni  = (double *) calloc(ist.totallumo+ist.totalhomo, sizeof(double)); // <psi|py|psi>
+    // pz_ni  = (double *) calloc(ist.totallumo+ist.totalhomo, sizeof(double)); // <psi|pz|psi>
 
     dipole(vx, vy, vz, psi, mux, muy, muz, eval, ist, par);
     mag_dipole(vx, vy, vz, psi, mx, my, mz, eval, planfw, planbw, fftwpsi, ist, par);
+    
+    // momentum(vx, vy, vz, psi, px_ni, py_ni, pz_ni, eval, planfw, planbw, fftwpsi, ist, par);
+
     rotational_strength(rs, mux, muy, muz, mx, my, mz, eval, ist);
     bethe_salpeter(bsmat, h0mat, psi, vz, mux, muy, muz, mx, my, mz, ist, par);
   

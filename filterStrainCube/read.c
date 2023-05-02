@@ -214,6 +214,7 @@ void assign_atom_type(char *atyp,long j)
 /*****************************************************************************/
 double retIdealBondLength(long natyp_1, long natyp_2, int crystalStructureInt)
 {
+	char strerror[100];
   if (((natyp_1==0) && (natyp_2==1)) && (crystalStructureInt==0)) return(2.6326);  // CdSe, wz
   else if (((natyp_1==1) && (natyp_2==0)) && (crystalStructureInt==0)) return(2.6326); 
   else if (((natyp_1==0) && (natyp_2==1)) && (crystalStructureInt==1)) return(2.6233); // CdSe, zb
@@ -231,7 +232,7 @@ double retIdealBondLength(long natyp_1, long natyp_2, int crystalStructureInt)
   else if (((natyp_1==15) && (natyp_2==16)) && (crystalStructureInt==1)) return(2.36); // GaP, zb
   else if (((natyp_1==16) && (natyp_2==15)) && (crystalStructureInt==1)) return(2.36); 
   else {
-    sprintf (strerror,"Atom pair type %d %d with crystalStructureInt %d not in current list of bond lengths.",natyp_1, natyp_2, crystalStructureInt);
+    sprintf (strerror,"Atom pair type %ld %ld with crystalStructureInt %d not in current list of bond lengths.",natyp_1, natyp_2, crystalStructureInt);
     nerror (strerror);
   }
   return(0);

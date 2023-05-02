@@ -59,7 +59,7 @@ int z_project(double *vector, double *vz, par_st par, long_st ist, char *fname)
 
 /****************************************************************************/
 
-static int istrapped(struct pzdata *data, long len)
+int istrapped(struct pzdata *data, long len)
 /* This is the same logic I used in my python scripts to select the state for 
  * psi-hl.x.
  *

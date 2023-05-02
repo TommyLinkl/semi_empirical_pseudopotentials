@@ -160,6 +160,7 @@ void mag_dipole(double *vx, double *vy, double *vz, double *psi, double *mx, dou
       psidz[jgrid] = fftwpsi[jgrid][0]; // z-derivative of the hole wavefunction
     }
 
+    // Calculate the mag dipole and print out to file
     for (a = ist.nlumo; a < ist.nlumo+ist.totallumo; a++) {
       sumX = sumY = sumZ = 0.0;
       for (jz = 0; jz < ist.nz; jz++) {

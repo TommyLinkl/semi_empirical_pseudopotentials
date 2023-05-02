@@ -12,7 +12,7 @@ void Hmatreal(zomplex *psi,zomplex *phi,double *psitot,double *potl,double *ksqr
 {
   FILE *pg;
   long ims, jms, jgrid;
-  long long mstot = (long long)ist.mstot, info, lwk = 3*ist.mstot;
+  long long mstot = (long long)ist.mstot, info=0, lwk = 3*ist.mstot;
   double *H, *work, *tpsi, sum;
 
   // Dynamically allocate memory
