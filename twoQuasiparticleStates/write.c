@@ -184,20 +184,15 @@ void writeCubeFile(double *rho, grid rSpaceGrid, char *fileName) {
   double x, y, z;
   char line[80], atomSymbol[10];
 
-
-  pConfFile = fopen("conf.par", "r");
+  pConfFile = fopen("conf.dat", "r"); //conf.par
   fscanf(pConfFile, "%ld", &nAtoms);
   pf = fopen(fileName, "w");
   fprintf(pf, "CUBE FILE\n");
-  //fprintf(pf, "OUTER LOOP: Z, MIDDLE LOOP: Y, INNER LOOP: X\n");
   fprintf(pf, "OUTER LOOP: X, MIDDLE LOOP: Y, INNER LOOP: Z\n");
   fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", nAtoms, rSpaceGrid.minPos.x, rSpaceGrid.minPos.y, rSpaceGrid.minPos.z);
-  //fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", nAtoms, 0.0, 0.0, 0.0);
   fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", rSpaceGrid.nGridPointsX, rSpaceGrid.stepSize.x, 0.0, 0.0);
-  //fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", rSpaceGrid.nGridPointsZ, 0.0, 0.0, rSpaceGrid.stepSize.z);
   fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", rSpaceGrid.nGridPointsY, 0.0, rSpaceGrid.stepSize.y, 0.0);
   fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", rSpaceGrid.nGridPointsZ, 0.0, 0.0, rSpaceGrid.stepSize.z);
-  //fprintf(pf, "%5li%12.6f%12.6f%12.6f\n", rSpaceGrid.nGridPointsX, rSpaceGrid.stepSize.x, 0.0, 0.0);
   fgets(line, 80, pConfFile); 
   while(fgets(line, 80, pConfFile) != NULL) {
     sscanf(line, "%2s %lf %lf %lf", &atomSymbol, &x, &y, &z);
@@ -244,17 +239,15 @@ void writeCubeFile(double *rho, grid rSpaceGrid, char *fileName) {
 
   for (iX = 0; iX < rSpaceGrid.nGridPointsX; iX++) {
     for (iY = 0; iY < rSpaceGrid.nGridPointsY; iY++) {
-      iXY = rSpaceGrid.nGridPointsZ * (rSpaceGrid.nGridPointsY * iX + iY);
-	    for (iZ = 0; iZ < rSpaceGrid.nGridPointsZ; iZ++) {
-        iGrid = iXY + iZ;
+      for (iZ = 0; iZ < rSpaceGrid.nGridPointsZ; iZ++) {
+        iGrid = iZ*rSpaceGrid.nGridPointsY*rSpaceGrid.nGridPointsX + iY*rSpaceGrid.nGridPointsX + iX;
         fprintf(pf, "%g ", rho[iGrid]);
-        if (iX % 6 == 5) {
-          fprintf(pf, "\n");
-        }
+        if (iZ % 6 == 5) { fprintf(pf, "\n");}
       }
       fprintf(pf, "\n");
     }
   }
+
   fclose(pConfFile);
   fclose(pf);
 

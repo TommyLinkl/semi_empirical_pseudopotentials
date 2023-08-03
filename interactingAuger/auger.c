@@ -9,7 +9,7 @@ void calculate_auger(double *Cbs,double *Ebs,double *vkijb,double *vkcab,double 
   long iBiexc, iExc1, iExc2, thl, th2l, thl2, numConsWindows = 10;
   double *w2h, *w2e, tmp;
   double *eRate, *hRate, *biexcEnergy;
-  double sum, pF;
+  double sum, pF, this_lifetime_ps;
   long *eCount, *hCount;
 
   // Write time this function began
@@ -134,6 +134,7 @@ void calculate_auger(double *Cbs,double *Ebs,double *vkijb,double *vkcab,double 
   // k_x- (au & ps), k_x+ (au & ps), k_AR (au & ps), lifetime(ps)
   // TODO: add loop over numConsWindows -> different file names for each
   pf = fopen("auger.dat" , "w");
+  fprintf (pf,"# iExc1, iExc2, biexcEnergy, numHotElecs, numHotHoles, k_x- (au & ps), k_x+ (au & ps), k_AR (au & ps), lifetime(ps)\n");      
   iBiexc = 0;
   for (iExc1 = 0; iExc1 < ist.numExcitons; iExc1++) {
     for (iExc2 = 0; iExc2 < ist.numExcitons; iExc2++) {
@@ -149,12 +150,16 @@ void calculate_auger(double *Cbs,double *Ebs,double *vkijb,double *vkcab,double 
   fclose(pf);
 
   // Perform Boltzmann weighted average over the biexciton initial states
+  pf = fopen("window_augerLifetime.dat", "w");
+  fprintf(pf, "# Energy_Window (a.u.)       Auger_Lifetime (ps) \n");
   for (iDeltaE = 0; iDeltaE < numConsWindows; iDeltaE++) {
-  	if (iDeltaE) writeSeparation(stdout);
-  	printf("Energy conservation window = %.6f\n\n", deltaE[iDeltaE]);
-  	calc_boltzmann_weighted_rates(biexcEnergy, &(eRate[iDeltaE*ist.numBiexcitons]), 
+    if (iDeltaE) writeSeparation(stdout);
+    printf("Energy conservation window = %.6f\n\n", deltaE[iDeltaE]);
+    this_lifetime_ps = calc_boltzmann_weighted_rates(biexcEnergy, &(eRate[iDeltaE*ist.numBiexcitons]), 
       &(hRate[iDeltaE*ist.numBiexcitons]), par.temp, ist.numBiexcitons);
+    fprintf(pf, "%.6f      %.12f \n", deltaE[iDeltaE], this_lifetime_ps);
   }
+  fclose(pf); 
 
   // Free dynamically allocated memory 
   free(w2h); free(w2e); 
@@ -169,7 +174,7 @@ void calculate_auger(double *Cbs,double *Ebs,double *vkijb,double *vkcab,double 
 // calculates and prints the boltzmann weighted AR, k_x-, k_x+ rates and 
 // the corresponding lifetimes and boltzmann populations
 
-void calc_boltzmann_weighted_rates(double *energies, double *eRate, double *hRate, double temp, int numStates) {
+double calc_boltzmann_weighted_rates(double *energies, double *eRate, double *hRate, double temp, int numStates) {
   FILE *pf;
   long i;
   double pF, bwAugerRate, bwElecRate, bwHoleRate;
@@ -203,7 +208,7 @@ void calc_boltzmann_weighted_rates(double *energies, double *eRate, double *hRat
   printf("Boltzmann weighted x+ lifetime = %.6f a.u. %.12f ps\n", 1.0/bwHoleRate, 1.0/(bwHoleRate*AUTOPS));
   printf("Boltzmann weighted Auger lifetime = %.6f a.u. %.12f ps\n", 1.0/(bwAugerRate), 1.0/(bwAugerRate*AUTOPS));
 
-  return;
+  return (1.0/(bwAugerRate*AUTOPS));
 }
 
 /*****************************************************************************/

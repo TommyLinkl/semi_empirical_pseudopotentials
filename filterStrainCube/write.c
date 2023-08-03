@@ -36,7 +36,7 @@ void writeCubeFile(double *rho, double xmin, double ymin, double zmin,
     double x, y, z;
     char line[80], atomSymbol[10];
 
-    pConfFile = fopen("conf.par", "r");
+    pConfFile = fopen("conf.dat", "r"); //conf.par
     fscanf(pConfFile, "%ld", &nAtoms);
     pf = fopen("localPot.cube", "w");
     fprintf(pf, "CUBE FILE\n");
@@ -100,13 +100,10 @@ void writeCubeFile(double *rho, double xmin, double ymin, double zmin,
     
     for (iX = 0; iX < nx; iX++) {
         for (iY = 0; iY < ny; iY++) {
-            iXY = nz * (ny * iX + iY);
             for (iZ = 0; iZ < nz; iZ++) {
-                iGrid = iXY + iZ;
+                iGrid = iZ*ny*nx + iY*nx + iX;
                 fprintf(pf, "%g ", rho[iGrid]);
-                if (iZ % 6 == 5) {
-                    fprintf(pf, "\n");
-                }
+                if (iZ % 6 == 5) {fprintf(pf, "\n"); }
             }
             fprintf(pf, "\n");
         }

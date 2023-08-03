@@ -104,6 +104,7 @@ double interpolate(double r,double dr,double *vr,double *pot,long npot,long n,lo
 
 // Functions related to reading in the input - read.c
 long read_conf(double *rx, double *ry, double *rz, atm_st *atm, long n, FILE *);
+void read_pot(double *vr,double *pot,long *npot,double *dr,atm_st *atm,long n,long ntype);
 
 // Functions related to normalizing - norm.c
 double norm(zomplex *, double,long);
@@ -130,6 +131,7 @@ long random(void);
 void srandom(unsigned int);
 double ran_nrc(long *idum);
 double ran();
+void Randomize();
 
 // Functions related to the overall size of the nanocrystal/ box  - size.c
 double get_dot_ligand_size(double *,double *,double *,long);
@@ -169,7 +171,7 @@ double samp_points_ashkenazy(zomplex *polong,double min,double max,long nc);
 
 // Functions related to calculating the final Auger recombination rates - auger.c
 void calculate_auger(double *Cbs,double *Ebs,double *vkijb,double *vkcab,double *evalbe,double *evalai,double *sigeai,lng_st ist,par_st par);
-void calc_boltzmann_weighted_rates(double *energies, double *eRate, double *hRate, double temp, int numStates);
+double calc_boltzmann_weighted_rates(double *energies, double *eRate, double *hRate, double temp, int numStates);
 double calc_partition_function(double *energies, double temp, int numStates);
 
 double dotpreal(zomplex *psi,double *phi,long n,long m,long ngrid,double dv);

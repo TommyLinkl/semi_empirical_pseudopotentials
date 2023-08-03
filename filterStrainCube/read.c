@@ -23,15 +23,17 @@ void read_conf(double *rx, double *ry, double *rz, atm_st *atm, long ntot, FILE 
 	xd /= (double)(ntot);
 	yd /= (double)(ntot);
 	zd /= (double)(ntot);
-	for (i = 0; i < ntot; i++) {
+	printf("Average x, y, z coordinates: %g %g %g \n", xd, yd, zd);
+	for (i = 0; i < ntot; i++) {;
 		rx[i] -= xd;
 		ry[i] -= yd;
 		rz[i] -= zd;
 	}  
 
 	pw = fopen("conf.dat" , "w");
+	fprintf(pw, "%ld\n", ntot);
 	for (i = 0; i < ntot; i++) {
-		fprintf(pw, "%s %g %g %g %ld\n", atm[i].atyp, rx[i], ry[i], rz[i], atm[i].natyp);
+		fprintf(pw, "%s %lf %lf %lf\n", atm[i].atyp, rx[i], ry[i], rz[i]);
 	}
 	fclose(pw);
 	

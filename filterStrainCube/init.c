@@ -198,6 +198,9 @@ void init(double *potl,double *vx,double *vy,double *vz,double *ksqr,double *rx,
 	else if (! strcmp(ist->outmostMaterial, "alloyInGaAs")) {  // cation terminated surface only
 		outmostMaterialInt = 5;
 	}
+	else if (! strcmp(ist->outmostMaterial, "GaAs")) {  // cation terminated surface only
+		outmostMaterialInt = 6;
+	}
 	else {
 		printf("\n\nOutmostMaterial type %s not recognized -- the program is exiting!!!\n\n", ist->outmostMaterial);
 		fflush(stdout);
@@ -226,21 +229,16 @@ void init(double *potl,double *vx,double *vy,double *vz,double *ksqr,double *rx,
 		rex = sqrt(vx[jx]*vx[jx]+vy[jy]*vy[jy]+vz[jz]*vz[jz]);
 		// TODO: have a more flexible potEx / maybe have precalculated potEx at each grid point 
 		potEx = expot(rex,ppar);
-		//printf("potEx = %.4f", potEx); 
 		jxyz = jyz + jx;
 		for (sum = 0.0, ie = 0; ie < ntot; ie++) {
 			 dx = vx[jx] - rx[ie];
 			 dy = vy[jy] - ry[ie];
 			 dz = vz[jz] - rz[ie];
 			 del = sqrt(dx * dx + dy * dy + dz * dz);
-			 //if ((atm[ie].natyp!=2)&(atm[ie].natyp!=16)) {
-			 // printf("ie, atm[ie].natyp, dr[atm[ie].natyp] = %ld %d %g \n", ie, atm[ie].natyp, dr[atm[ie].natyp]);
-			 //}
 			 sum += interpolate(del,dr[atm[ie].natyp],vr,potatom,ist->npot,npot[atm[ie].natyp],atm[ie].natyp, strainScale[ie]);
 		} 
 		potl[jxyz] = sum+potEx;
 		}
-		// printf("potl[jxyz] = %.4f\n", potl[jxyz]); 
 	}
 	}
 
@@ -339,16 +337,16 @@ void readNearestNeighbors(long nAtoms, int crystalStructure, vector *atomNeighbo
 		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.55);
 	}
 	if (! strcmp(n3, "P2") && ! strcmp(n4, "P2")) {
-		// atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.25);
-		// atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.25);
-		// Just for Eran's old geometry
-		atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.30);
-		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.30);
+		atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.25);
+		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.25);
+		// Below is just for Eran's old geometry
+		// atomNeighbors[4*iAtom+2] = retScaledVector(atomNeighbors[4*iAtom+2], 1./0.30);
+		// atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1./0.30);
 	}
 	else if (! strcmp(n4, "P2")) {
-		// atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.30);
-		// Just for Eran's old geometry
-		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.40);
+		atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.30);
+		// Below is just for Eran's old geometry
+		// atomNeighbors[4*iAtom+3] = retScaledVector(atomNeighbors[4*iAtom+3], 1.0/0.40);
 	}
 	
 	at_natyp = assign_atom_number(at);
@@ -395,6 +393,12 @@ void readNearestNeighbors(long nAtoms, int crystalStructure, vector *atomNeighbo
 			else if ((outmostMaterial==5) && (at_natyp==3)) neighbors_natyp[iNeighbor]=2; // Outmost: alloyInGaAs; Center: As. Replace with In. This is a completely random choice. 
 			else if ((outmostMaterial==5) && (at_natyp!=2) && (at_natyp!=15)) {
 				sprintf(strerror,"Outmost layer is input as %d, but the surface is not cation terminated.\n", outmostMaterial);
+				nerror (strerror);
+			}
+			else if ((outmostMaterial==6) && (at_natyp==15)) neighbors_natyp[iNeighbor]=3; // Outmost: GaAs; Center: Ga. Replace with As. 
+			else if ((outmostMaterial==6) && (at_natyp==3)) neighbors_natyp[iNeighbor]=15; // Outmost: GaAs; Center: As. Replace with Ga. 
+			else if ((outmostMaterial==6) && (at_natyp!=15) && (at_natyp!=3)) {
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
 				nerror (strerror);
 			}
 		}

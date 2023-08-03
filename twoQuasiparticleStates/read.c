@@ -649,8 +649,9 @@ long readConfFile(double *rx, double *ry, double *rz, atm_st *atm, long nAtoms, 
   }  
 
   pw = fopen("conf.dat" , "w");
+  fprintf(pw, "%ld\n", nAtoms);
   for (i = 0; i < nAtoms; i++) {
-    fprintf(pw, "%s %g %g %g %ld\n", atm[i].atyp, rx[i], ry[i], rz[i], atm[i].natyp);
+    fprintf(pw, "%s %lf %lf %lf\n", atm[i].atyp, rx[i], ry[i], rz[i]);
   }
   fclose(pw);
   
