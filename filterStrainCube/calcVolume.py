@@ -38,6 +38,7 @@ vol_cd1se3s = vol(v1*cd_se, v2*cd_s, v3*cd_s, v4*cd_s)
 # Cd center, 4 S vertices
 vol_cd4s = vol(v1*cd_s, v2*cd_s, v3*cd_s, v4*cd_s)
 
+print()
 # # # # zincblende # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 cd_se = 2.6233 # Cd-Se bond length (Ang)
 cd_s = 2.5193 # Cd-S bond length (Ang)
@@ -63,8 +64,11 @@ vol_cd1se3s = vol(v1*cd_se, v2*cd_s, v3*cd_s, v4*cd_s)
 
 # Cd center, 4 S vertices
 vol_cd4s = vol(v1*cd_s, v2*cd_s, v3*cd_s, v4*cd_s)
+
 vol_in4p = vol(v1*in_p, v2*in_p, v3*in_p, v4*in_p)
 print(vol_in4p)
+
+'''
 # # # # verify derivatives # # # # # # # # # # # # # # # # # # # # # # # # # # #
 dx = 0.013299653
 
@@ -139,3 +143,4 @@ print(-(dvdv1y+dvdv2y+dvdv3y))
 print('dv / dv4z: ')
 print(dvdv4z)
 print(-(dvdv1z+dvdv2z+dvdv3z))
+'''

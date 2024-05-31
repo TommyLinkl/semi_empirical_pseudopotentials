@@ -23,7 +23,7 @@ void init_size(long argc, char *argv[],par_st *par,long_st *ist)
 	fscanf (pf,"%lg",&par->Elmax); /*** maximum energy ***/
 	fscanf (pf,"%ld",&ist->nthreads); /*** number of threads ***/
 	fscanf (pf,"%s", ist->crystalStructure); /*** wurtzite or zincblende ***/
-	fscanf (pf,"%s", ist->outmostMaterial); /*** CdS, CdSe, InP, InAs, alloyInGaP, alloyInGaAs ***/
+	fscanf (pf,"%s", ist->outmostMaterial); /*** CdS, CdSe, InP, InAs, alloyInGaP, alloyInGaAs, GaAs, GaP, ZnSe, ZnS, alloyGaAsP, alloyGaAsSb ***/
 	fclose(pf);
 
 	pf = fopen("conf.par" , "r");
@@ -198,8 +198,23 @@ void init(double *potl,double *vx,double *vy,double *vz,double *ksqr,double *rx,
 	else if (! strcmp(ist->outmostMaterial, "alloyInGaAs")) {  // cation terminated surface only
 		outmostMaterialInt = 5;
 	}
-	else if (! strcmp(ist->outmostMaterial, "GaAs")) {  // cation terminated surface only
+	else if (! strcmp(ist->outmostMaterial, "GaAs")) {
 		outmostMaterialInt = 6;
+	}
+	else if (! strcmp(ist->outmostMaterial, "ZnSe")) { 
+		outmostMaterialInt = 7;
+	}
+	else if (! strcmp(ist->outmostMaterial, "ZnS")) { 
+		outmostMaterialInt = 8;
+	}
+	else if (! strcmp(ist->outmostMaterial, "alloyGaAsP")) {   // cation terminated surface only
+		outmostMaterialInt = 9;
+	}
+	else if (! strcmp(ist->outmostMaterial, "alloyGaAsSb")) {   // cation terminated surface only
+		outmostMaterialInt = 10;
+	}
+        else if (! strcmp(ist->outmostMaterial, "GaP")) {
+		outmostMaterialInt = 11;
 	}
 	else {
 		printf("\n\nOutmostMaterial type %s not recognized -- the program is exiting!!!\n\n", ist->outmostMaterial);
@@ -401,6 +416,31 @@ void readNearestNeighbors(long nAtoms, int crystalStructure, vector *atomNeighbo
 				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
 				nerror (strerror);
 			}
+			else if ((outmostMaterial==7) && (at_natyp==6)) neighbors_natyp[iNeighbor]=1; // ZnSe, Center-Zn, Replace with Se. 
+			else if ((outmostMaterial==7) && (at_natyp==1)) neighbors_natyp[iNeighbor]=6; // ZnSe, Center-Se, Replace with Zn. 
+			else if ((outmostMaterial==7) && (at_natyp!=1) && (at_natyp!=6)) {
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				nerror (strerror);
+			}
+			else if ((outmostMaterial==8) && (at_natyp==6)) neighbors_natyp[iNeighbor]=7; // ZnS, Center-Zn, Replace with S. 
+			else if ((outmostMaterial==8) && (at_natyp==7)) neighbors_natyp[iNeighbor]=6; // ZnS, Center-S, Replace with Zn. 
+			else if ((outmostMaterial==8) && (at_natyp!=6) && (at_natyp!=7)) {
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				nerror (strerror);
+			}
+			else if ((outmostMaterial==9) && ((at_natyp==3)||(at_natyp==16))) neighbors_natyp[iNeighbor]=15; // Outmost: alloyGaAsP; Center: As or P. Replace with Ga. 
+			else if ((outmostMaterial==9) && (at_natyp==15)) neighbors_natyp[iNeighbor]=3; // Outmost: alloyGaAsP; Center: Ga. Replace with As. This is a completely random choice. 
+			else if ((outmostMaterial==9) && (at_natyp!=3) && (at_natyp!=15) && (at_natyp!=16)) {
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				nerror (strerror);
+			}
+                        else if ((outmostMaterial==11) && (at_natyp==15)) neighbors_natyp[iNeighbor]=16; // Outmost: GaP; Center: Ga. Replace with P. 
+			else if ((outmostMaterial==11) && (at_natyp==16)) neighbors_natyp[iNeighbor]=15; // Outmost: GaP; Center: P. Replace with Ga. 
+			else if ((outmostMaterial==11) && (at_natyp!=15) && (at_natyp!=16)) {
+				sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+				nerror (strerror);
+			}
+
 		}
 		bondLengths[iNeighbor] = retIdealBondLength(at_natyp, neighbors_natyp[iNeighbor], crystalStructure); 
 		// printf("at_natyp = %d, iNeighbor = %d, neighbors_natyp[iNeighbor] = %d, bondLengths[iNeighbor]=%g \n", at_natyp, iNeighbor, neighbors_natyp[iNeighbor], bondLengths[iNeighbor]); 

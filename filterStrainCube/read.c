@@ -231,8 +231,12 @@ double retIdealBondLength(long natyp_1, long natyp_2, int crystalStructureInt)
   else if (((natyp_1==16) && (natyp_2==2)) && (crystalStructureInt==1)) return(2.5228); 
   else if (((natyp_1==15) && (natyp_2==3)) && (crystalStructureInt==1)) return(2.4480); // GaAs, zb
   else if (((natyp_1==3) && (natyp_2==15)) && (crystalStructureInt==1)) return(2.4480); 
-  else if (((natyp_1==15) && (natyp_2==16)) && (crystalStructureInt==1)) return(2.36); // GaP, zb
-  else if (((natyp_1==16) && (natyp_2==15)) && (crystalStructureInt==1)) return(2.36); 
+  else if (((natyp_1==15) && (natyp_2==16)) && (crystalStructureInt==1)) return(2.360); // GaP, zb
+  else if (((natyp_1==16) && (natyp_2==15)) && (crystalStructureInt==1)) return(2.360); 
+  else if (((natyp_1==6) && (natyp_2==1)) && (crystalStructureInt==1)) return(2.45); // ZnSe, zb
+  else if (((natyp_1==1) && (natyp_2==6)) && (crystalStructureInt==1)) return(2.45); 
+  else if (((natyp_1==6) && (natyp_2==7)) && (crystalStructureInt==1)) return(2.33); // ZnS, zb
+  else if (((natyp_1==7) && (natyp_2==6)) && (crystalStructureInt==1)) return(2.33); 
   else {
     sprintf (strerror,"Atom pair type %ld %ld with crystalStructureInt %d not in current list of bond lengths.",natyp_1, natyp_2, crystalStructureInt);
     nerror (strerror);
