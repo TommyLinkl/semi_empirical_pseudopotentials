@@ -13,6 +13,7 @@ void init_size(long argc, char *argv[], par_st *par, lng_st *ist)
   fscanf (pf,"%ld",&ist->ny);  /*** number of grid point in y ***/
   fscanf (pf,"%ld",&ist->nz);  /*** number of grid point in z ***/
   fscanf (pf,"%ld",&ist->nmc);  /*** number of iteration ***/ /*** ns in filter code, num of filter cycles - tommy***/
+  fscanf (pf,"%ld",&ist->two);  /*** num of states per filter - tommy ***/
   fscanf (pf,"%ld",&ist->nc);    /*** length of newton interpolation ***/
   fscanf (pf,"%lg",&par->DeltaE); /*** DeltaE window used in enforcing energy conservation ***/
   fscanf (pf,"%ld",&ist->seed);    
@@ -32,7 +33,7 @@ void init_size(long argc, char *argv[], par_st *par, lng_st *ist)
   par->Elmin = -1;	/*** minimum energy ***/
   par->Elmax = 1;	/*** maximum energy ***/
   par->Ekinmax = 10;	/*** kinetic energy cutoff ***/
-  ist->two = 20;   /*** num of states per filter is hard coded - tommy ***/
+  // ist->two = 20;   /*** num of states per filter is hard coded - tommy ***/
   ist->ms = ist->two * ist->nmc;	/*** number of states per filter ***/
   par->kbT = KB*par->temp/AUTOEV;
   par->boltzEnergyRange = 3.0*par->kbT;

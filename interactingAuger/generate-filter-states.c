@@ -41,29 +41,34 @@ void generate_filter_states(double *psitot,double *eval,double *sige,double *eva
   printf("dt = %g dE = %g\n", dt, par->dE); fflush(0);
 
   /*** generate the filter coeff ***/
-  double dela = (par->Eamax - par->Eamin) / ((double)(ist->two) / 2.0 - 1.0);
-  for (jms = 0; jms < ist->two / 2; jms++)
+  // Tommy - shift weight on hole states. And target energy outside of this range
+  double dela = (par->Eamax - par->Eamin) / ((double)(ist->two) / 2.0 - 1.0 - 5.0);
+  for (jms = 0; jms < ist->two/2-5; jms++)
     el[jms] = par->Eamin + (double)(jms) * dela;
 
-  double deli = (par->Eimax - par->Eimin) / ((double)(ist->two) / 2.0 - 1.0);
-  for (jms = 0; jms < ist->two/2; jms++)
-    el[jms+ist->two/2] = par->Eimin + (double)(jms) * deli;
+  double deli = (par->Eimax - par->Eimin) / ((double)(ist->two) / 2.0 - 1.0 + 5.0);
+  for (jms = 0; jms < ist->two/2+5; jms++)
+    el[jms+ist->two/2-5] = par->Eimin - 0.1 + (double)(jms) * deli;
 
   printf("The filter target energies are:\n");
   for (jms = 0; jms < ist->two; jms++)
     printf("el = % .8f\n", el[jms]);
- 
+  
   coefficient(an,zn,ist->nc,ist->two,dt,par->dE,par->Vmin,el);
 
   /*** initial random states ***/
   if ((rho = (zomplex*)calloc(ist->ngrid,sizeof(zomplex)))==NULL)nerror("rho");
   for (jmc = 0; jmc < ist->nmc; jmc++){
     init_psi(rho,*ist,*par,&idum);
-    for (jms = 0; jms < ist->two; jms++)
-      for (igrid = 0; igrid < ist->ngrid; igrid++)
+    for (jms = 0; jms < ist->two; jms++) {
+      for (igrid = 0; igrid < ist->ngrid; igrid++) {
+        //printf("jmc, jms, igrid = %ld, %ld, %d \n", jmc, jms, igrid); 
         psitot[jmc*ist->two*ist->ngrid+ist->ngrid*jms+igrid] = rho[igrid].re;
+      }
+    }
   }
   free(rho);
+  printf("Starting filtering\n");
   
   /*** filter the states ***/
   omp_set_dynamic(0);

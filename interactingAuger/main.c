@@ -129,7 +129,8 @@ int main(long argc, char *argv[])
 
   /**************************************************************************/
   
-  psiai = (double *) calloc(ist.ngrid*ist.ms, sizeof(double));
+  if ((psiai = (double *) calloc(ist.ngrid*ist.ms, sizeof(double)))==NULL)nerror("psiai");
+  printf("ist.ngrid*ist.ms = %ld\n", ist.ngrid*ist.ms); 
   evalai = (double *) calloc(ist.ms, sizeof(double));
   sigeai = (double *) calloc(ist.ms, sizeof(double));
   generate_filter_states(psiai,evalai,sigeai,eval,ksqr,potl,vx,vy,vz,&ist,&par,planfw,planbw,fftwpsi);
