@@ -11,7 +11,7 @@ LIB = $(${OS}_LIB) $(${OS}_CLIB) $(${OS}_FCLIB) $(${OS}_MYLIB)
 
 # flags 
 Linux_OPTFLAGS = -fast -qopenmp
-Linux_OPTFLAGS = -DMKL_ILP64 -O3 -xSSE3 -no-prec-div -fp-model fast=2 -qopenmp -static
+Linux_OPTFLAGS = -DMKL_ILP64 -O3 -xSSE3 -no-prec-div -fp-model fast=2 -qopenmp # -static
 Linux_CFLAGS = $(${OS}_OPTFLAGS) -DFFT_FFTW
 Linux_FFLAGS = $(${OS}_OPTFLAGS)
 

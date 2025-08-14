@@ -40,7 +40,7 @@ int main(long argc, char *argv[]) {
   lParams lPar;
   double *refTetrahedronVol, *tetrahedronVol, *strainScale;
   vector *tetrahedronVolDerivatives, *strainScaleDerivatives;
-  int crystalStructureInt;
+  int crystalStructureInt, outmostMaterialInt;
 
   /*************************************************************************/  
   // Write time the program began and read input.par 
@@ -119,8 +119,36 @@ int main(long argc, char *argv[]) {
       exit(EXIT_FAILURE);
   }
 
+  /*** Assign outmostMaterialInt ***/
+  if (! strcmp(lPar.outmostMaterial, "CdS")) {
+    outmostMaterialInt = 0;
+  }
+  else if (! strcmp(lPar.outmostMaterial, "CdSe")) {
+    outmostMaterialInt = 1;
+  }
+  else if (! strcmp(lPar.outmostMaterial, "InP")) {
+    outmostMaterialInt = 2;
+  }
+  else if (! strcmp(lPar.outmostMaterial, "InAs")) {
+    outmostMaterialInt = 3;
+  }
+  else if (! strcmp(lPar.outmostMaterial, "alloyInGaP")) {  //cation terminated surface only
+    outmostMaterialInt = 4;
+  }
+  else if (! strcmp(lPar.outmostMaterial, "alloyInGaAs")) {  // cation terminated surface only
+    outmostMaterialInt = 5;
+  }
+  else if (! strcmp(lPar.outmostMaterial, "GaAs")) {  // cation terminated surface only
+    outmostMaterialInt = 6;
+  }
+  else {
+    printf("\n\nOutmostMaterial type %s not recognized -- the program is exiting!!!\n\n", lPar.outmostMaterial);
+    fflush(stdout);
+    exit(EXIT_FAILURE);
+  }
+
   readNearestNeighbors(lPar.nAtoms, atomNearestNeighbors);
-  calculateRefTetrahedronVol(lPar.nAtoms, crystalStructureInt, atoms, atomNearestNeighbors, refTetrahedronVol);
+  calculateRefTetrahedronVol(lPar.nAtoms, crystalStructureInt, outmostMaterialInt, atoms, atomNearestNeighbors, refTetrahedronVol);
   calculateTetrahedronVol(lPar.nAtoms, atoms, atomNearestNeighbors, tetrahedronVol);
   calculateTetrahedronVolDeriv(lPar.nAtoms, atoms, atomNearestNeighbors, tetrahedronVol, tetrahedronVolDerivatives);
   calculateStrainScale(lPar.nAtoms, atoms, refTetrahedronVol, tetrahedronVol, a4Params, a5Params, strainScale);
@@ -139,6 +167,7 @@ int main(long argc, char *argv[]) {
   /**************************************************************************/
   // Initialize the r-space grid 
   initRSpaceGrid(&rSpaceGrid, rSpaceGP, lPar);
+  printf("Finished with initializing r-space grid\n"); 
 
   /**************************************************************************/ 
   calcElPh(Vab, Vij, dPotdAtomPos, atoms, atomNearestNeighbors, atomicPPGrid, dAtomicPPGrid, 

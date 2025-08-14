@@ -45,6 +45,7 @@ long readInputParFile(grid3d *rSpaceGrid, dParams *dPar, lParams *lPar) {
       else if (! strcmp(field, "nPhonons")) fscanf(pf, "%s %ld", tmp, &(lPar->nPhonons));
       else if (! strcmp(field, "nThreads")) fscanf(pf, "%s %ld", tmp, &(lPar->nThreads));
       else if (! strcmp(field, "crystalStructure")) fscanf(pf, "%s %s", tmp, &(lPar->crystalStructure));
+      else if (! strcmp(field, "outmostMaterial")) fscanf (pf,"%s %s", tmp, &(lPar->outmostMaterial)); /*** CdS, CdSe, InP, InAs, alloyInGaP, alloyInGaAs ***/
       else {
         printf("Invalid input field and/or format - equal sign required after each field\n");
         printf("Only allowed fields are (case-sensitive):\n\n");
@@ -247,7 +248,7 @@ long isAPassivationSymbol(char *atomSymbol) {
   // check if a the symbol is P1, P2, P3 or P4 -> return 1/True if so
   if (! strcmp(atomSymbol, "P1") || ! strcmp(atomSymbol, "P2") ||
     ! strcmp(atomSymbol, "P3") || ! strcmp(atomSymbol, "P4")) return 1;
-  else return 0; // not a passivation ligand symbol -> return 0/False
+  else return 0; 
 }
 
 /****************************************************************************/
@@ -603,10 +604,22 @@ void readNearestNeighbors(long nAtoms, atom *atomNeighbors) {
 
 /*****************************************************************************/
 /* calculate reference tetrahedron volume for each atom */
-void calculateRefTetrahedronVol(long nAtoms, int crystalStructure, atom *atoms, atom *atomNeighbors, double *refTetrahedronVol) {
+void calculateRefTetrahedronVol(long nAtoms, int crystalStructure, int outmostMaterial, atom *atoms, atom *atomNeighbors, double *refTetrahedronVol) {
+    vector v1, v2, v3, v4; 
+    vector v1_scale, v2_scale, v3_scale, v4_scale; 
+    vector side1, side2, side3; 
+    long iAtom, at_natyp, *neighbors_natyp; 
+    int iNeighbor;
+    double *bondLengths; 
+    char strerror[200];
+    if ((neighbors_natyp = (long*)calloc(4,sizeof(double)))==NULL)nerror("neighbors_natyp");
+    if ((bondLengths = (double*)calloc(4,sizeof(double)))==NULL)nerror("bondLengths");
 
-    long iAtom;
-    int numSe;
+    v1.x=sqrt(8./9.);   v1.y=0.;   v1.z=-1./3.;
+    v2.x=-sqrt(2./9.);   v2.y=sqrt(2./3.);   v2.z=-1./3.;
+    v3.x=-sqrt(2./9.);   v3.y=-sqrt(2./3.);   v3.z=-1./3.;
+    v4.x=0.;   v4.y=0.;   v4.z=1.;
+    
 
     for (iAtom = 0; iAtom < nAtoms; iAtom++) {
 
@@ -614,72 +627,78 @@ void calculateRefTetrahedronVol(long nAtoms, int crystalStructure, atom *atoms, 
             refTetrahedronVol[iAtom] = 0.;
         }
         else {
-            numSe = 0;
-            // count number of Se neighbors
-            if (! strcmp(atomNeighbors[4*iAtom].symbol, "Se")) numSe++;
-            if (! strcmp(atomNeighbors[4*iAtom+1].symbol, "Se")) {
-                numSe++;
-                if (! strcmp(atomNeighbors[4*iAtom+2].symbol, "P1")) numSe++;
-                if (! strcmp(atomNeighbors[4*iAtom+3].symbol, "P1")) numSe++;
-            }
-            if (! strcmp(atomNeighbors[4*iAtom+2].symbol, "Se")) numSe++;
-            if (! strcmp(atomNeighbors[4*iAtom+3].symbol, "Se")) numSe++;
+            at_natyp = assign_atom_number(atoms[iAtom].symbol);
+            neighbors_natyp[0] = assign_atom_number(atomNeighbors[4*iAtom].symbol);
+            neighbors_natyp[1] = assign_atom_number(atomNeighbors[4*iAtom+1].symbol);
+            neighbors_natyp[2] = assign_atom_number(atomNeighbors[4*iAtom+2].symbol);
+            neighbors_natyp[3] = assign_atom_number(atomNeighbors[4*iAtom+3].symbol);
 
-            // printf("%ld %s %i\n", iAtom, atoms[iAtom].symbol, numSe);
+            for (iNeighbor = 0; iNeighbor < 4; iNeighbor++) {
+              bondLengths[iNeighbor] = 0.;
+              // If neighbor is a passivation ligand, replace it with the corresponding semiconductor atom
+              if ((neighbors_natyp[iNeighbor]==8) || (neighbors_natyp[iNeighbor]==9) || (neighbors_natyp[iNeighbor]==10) || (neighbors_natyp[iNeighbor]==11)) { 
+                if ((outmostMaterial==0) && (at_natyp==0)) neighbors_natyp[iNeighbor]=7; // CdS, Center-Cd, Replace with S. 
+                else if ((outmostMaterial==0) && (at_natyp==7)) neighbors_natyp[iNeighbor]=0; // CdS, Center-S, Replace with Cd. 
+                else if ((outmostMaterial==0) && (at_natyp!=0) && (at_natyp!=7)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp); 
+                  nerror(strerror);
+                } 
+                else if ((outmostMaterial==1) && (at_natyp==0)) neighbors_natyp[iNeighbor]=1; // CdSe, Center-Cd, Replace with Se. 
+                else if ((outmostMaterial==1) && (at_natyp==1)) neighbors_natyp[iNeighbor]=0; // CdSe, Center-Se, Replace with Cd. 
+                else if ((outmostMaterial==1) && (at_natyp!=0) && (at_natyp!=1)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+                  nerror (strerror);
+                }
+                else if ((outmostMaterial==2) && (at_natyp==2)) neighbors_natyp[iNeighbor]=16; // InP, Center-In, Replace with P. 
+                else if ((outmostMaterial==2) && (at_natyp==16)) neighbors_natyp[iNeighbor]=2; // InP, Center-P, Replace with In. 
+                else if ((outmostMaterial==2) && (at_natyp!=2) && (at_natyp!=16)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+                  nerror (strerror);
+                }
+                else if ((outmostMaterial==3) && (at_natyp==2)) neighbors_natyp[iNeighbor]=3; // InAs, Center-In, Replace with As. 
+                else if ((outmostMaterial==3) && (at_natyp==3)) neighbors_natyp[iNeighbor]=2; // InAs, Center-As, Replace with In. 
+                else if ((outmostMaterial==3) && (at_natyp!=2) && (at_natyp!=3)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+                  nerror (strerror);
+                }
+                else if ((outmostMaterial==4) && ((at_natyp==2)||(at_natyp==15))) neighbors_natyp[iNeighbor]=16; // Outmost: alloyInGaP; Center: In or Ga. Replace with P. 
+                else if ((outmostMaterial==4) && (at_natyp==16)) neighbors_natyp[iNeighbor]=2; // Outmost: alloyInGaP; Center: P. Replace with In. This is a completely random choice. 
+                else if ((outmostMaterial==4) && (at_natyp!=2) && (at_natyp!=15) && (at_natyp!=16)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+                  nerror (strerror);
+                }
+                else if ((outmostMaterial==5) && ((at_natyp==2)||(at_natyp==15))) neighbors_natyp[iNeighbor]=3; // Outmost: alloyInGaAs; Center: In or Ga. Replace with As. 
+                else if ((outmostMaterial==5) && (at_natyp==3)) neighbors_natyp[iNeighbor]=2; // Outmost: alloyInGaAs; Center: As. Replace with In. This is a completely random choice. 
+                else if ((outmostMaterial==5) && (at_natyp!=2) && (at_natyp!=15)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but the surface is not cation terminated.\n", outmostMaterial);
+                  nerror (strerror);
+                }
+                else if ((outmostMaterial==6) && (at_natyp==15)) neighbors_natyp[iNeighbor]=3; // Outmost: GaAs; Center: Ga. Replace with As. 
+                else if ((outmostMaterial==6) && (at_natyp==3)) neighbors_natyp[iNeighbor]=15; // Outmost: GaAs; Center: As. Replace with Ga. 
+                else if ((outmostMaterial==6) && (at_natyp!=15) && (at_natyp!=3)) {
+                  sprintf(strerror,"Outmost layer is input as %d, but atom type %ld is bonded to passivation ligands\n", outmostMaterial, at_natyp);
+                  nerror (strerror);
+                }
+              }
+              bondLengths[iNeighbor] = retIdealBondLength(at_natyp, neighbors_natyp[iNeighbor], crystalStructure); 
+              // printf("at_natyp = %d, iNeighbor = %d, neighbors_natyp[iNeighbor] = %d, bondLengths[iNeighbor]=%g \n", at_natyp, iNeighbor, neighbors_natyp[iNeighbor], bondLengths[iNeighbor]); 
+            }
 
-            // Se center
-            if (! strcmp(atoms[iAtom].symbol, "Se")) {
-                // printf("here Se!\n");
-                if (!crystalStructure) refTetrahedronVol[iAtom] = 9.36357042145021;
-                if (crystalStructure) refTetrahedronVol[iAtom] = 9.264686495055233;
-            }
-            // S center
-            else if (! strcmp(atoms[iAtom].symbol, "S")) {
-                // printf("here S!\n");
-                if (!crystalStructure) refTetrahedronVol[iAtom] = 8.303025459832083;
-                if (crystalStructure) refTetrahedronVol[iAtom] = 8.205905479438373;
-            }
-            // Cd center
-            else if (! strcmp(atoms[iAtom].symbol, "Cd")) {
-                // printf("here Cd!\n");
-                // 4 Se neighbors
-                if (numSe == 4) {
-                    if (!crystalStructure) refTetrahedronVol[iAtom] = 9.36357042145021;
-                    if (crystalStructure) refTetrahedronVol[iAtom] = 9.264686495055233;
-                }
-                // 3 Se neighbors, 1 S neighbor
-                else if (numSe == 3) {
-                    if (!crystalStructure) refTetrahedronVol[iAtom] = 9.087742385978258;
-                    if (crystalStructure) refTetrahedronVol[iAtom] = 8.989214552610866;
-                }
-                // 2 Se neighbors, 2 S neighbors
-                else if (numSe == 2) {
-                    if (!crystalStructure) refTetrahedronVol[iAtom] = 8.819136771653406;
-                    if (crystalStructure) refTetrahedronVol[iAtom] = 8.721023282605593;
-                }
-                // 1 Se neighbor,  3 S neighbors
-                else if (numSe == 1) {
-                    if (!crystalStructure) refTetrahedronVol[iAtom] = 8.557611741822427;
-                    if (crystalStructure) refTetrahedronVol[iAtom] = 8.459968364920925;
-                }
-                // 4 S neighbors
-                else {
-                    if (!crystalStructure) refTetrahedronVol[iAtom] = 8.303025459832083;
-                    if (crystalStructure) refTetrahedronVol[iAtom] = 8.205905479438373;
-                }
-            }
-            // otherwise
-            else {
-                printf("\n\nTetrahedron reference volumes not implemented for atom type %s -- the program is exiting!!!\n\n",
-                        atoms[iAtom].symbol);
-                fflush(stdout);
-                exit(EXIT_FAILURE);
-            }
+            v1_scale = retScaledVector(v1, bondLengths[0]);
+            v2_scale = retScaledVector(v2, bondLengths[1]);
+            v3_scale = retScaledVector(v3, bondLengths[2]);
+            v4_scale = retScaledVector(v4, bondLengths[3]);
+            side1 = retSubtractedVectors(v1_scale, v4_scale); 
+            side2 = retSubtractedVectors(v2_scale, v4_scale); 
+            side3 = retSubtractedVectors(v3_scale, v4_scale); 
+            refTetrahedronVol[iAtom] = fabs(retDotProduct(side1, retCrossProduct(side2, side3)))/6.;
+            // printf("The reference tetrahedron volume is %.7f \n", refTetrahedronVol[iAtom]);    
         }
     }
-
+  
     return;
 }
+
 
 /*****************************************************************************/
 /* calculate actual tetrahedron volume for each atom */
@@ -917,35 +936,40 @@ void calculateStrainScaleDeriv(long nAtoms, atom *atoms, atom *atomNeighbors,
     return;
 }
 
-/*****************************************************************************/
+/****************************************************************************/
+
 long assign_atom_number(char atyp[3])
 {
   char strerror[100];
-  
   if ((atyp[0] == 'C') && (atyp[1] == 'd')  && (atyp[2] == '\0')) return(0);
   else if ((atyp[0] == 'S') && (atyp[1] == 'e') && (atyp[2] == '\0')) return(1);
   else if ((atyp[0] == 'I') && (atyp[1] == 'n') && (atyp[2] == '\0')) return(2);
   else if ((atyp[0] == 'A') && (atyp[1] == 's') && (atyp[2] == '\0')) return(3);
   else if ((atyp[0] == 'S') && (atyp[1] == 'i') && (atyp[2] == '\0')) return(4);
-  else if ((atyp[0] == 'H') && (atyp[1] == '\0') && (atyp[2] == '\0'))  return(5);
-  else if ((atyp[0] == 'Z') && (atyp[1] == 'n') && (atyp[2] == '\0'))  return(6);
-  else if ((atyp[0] == 'S') && (atyp[1] == '\0') && (atyp[2] == '\0'))  return(7);
-  else if ((atyp[0] == 'P') && (atyp[1] == '1') && (atyp[2] == '\0'))  return(8);
-  else if ((atyp[0] == 'P') && (atyp[1] == '2') && (atyp[2] == '\0'))  return(9);
-  else if ((atyp[0] == 'P') && (atyp[1] == '3') && (atyp[2] == '\0'))  return(10);
-  else if ((atyp[0] == 'P') && (atyp[1] == '4') && (atyp[2] == '\0'))  return(11);
+  else if ((atyp[0] == 'H') && (atyp[1] == '\0') && (atyp[2] == '\0')) return(5);
+  else if ((atyp[0] == 'Z') && (atyp[1] == 'n') && (atyp[2] == '\0')) return(6);
+  // else if ((atyp[0] == 'S') && (atyp[1] == '\0') && (atyp[2] == '\0')) return(7);
+  else if (! strcmp(atyp,"S")) return(7);
+  else if ((atyp[0] == 'P') && (atyp[1] == '1') && (atyp[2] == '\0')) return(8);
+  else if ((atyp[0] == 'P') && (atyp[1] == '2') && (atyp[2] == '\0')) return(9);
+  else if ((atyp[0] == 'P') && (atyp[1] == '3') && (atyp[2] == '\0')) return(10);
+  else if ((atyp[0] == 'P') && (atyp[1] == '4') && (atyp[2] == '\0')) return(11);
   else if ((atyp[0] == 'T') && (atyp[1] == 'e') && (atyp[2] == '\0')) return(12);
   else if ((atyp[0] == 'C') && (atyp[1] == 'd') && (atyp[2] == 'z')) return(13);
   else if ((atyp[0] == 'S') && (atyp[1] == 'e') && (atyp[2] == 'z')) return(14);
+  else if ((atyp[0] == 'G') && (atyp[1] == 'a') && (atyp[2] == '\0')) return(15);
+  // else if ((atyp[0] == 'P') && (atyp[1] == '\0') && (atyp[2] == '\0')) return(16);
+  else if (! strcmp(atyp,"P")) return(16);
   else {
     sprintf (strerror,"atom type %s not in current list",atyp);
-    memoryError (strerror);
+    nerror (strerror);
   }
   return(0);
 }
 
-/*****************************************************************************/
-void assign_atom_type(char *atyp, long j)
+/****************************************************************************/
+
+void assign_atom_type(char *atyp,long j)
 {
   if (j == 0) {atyp[0] = 'C'; atyp[1] = 'd'; atyp[2] = '\0';}
   else if (j == 1) {atyp[0] = 'S'; atyp[1] = 'e'; atyp[2] = '\0';}
@@ -962,7 +986,34 @@ void assign_atom_type(char *atyp, long j)
   else if (j == 12) {atyp[0] = 'T'; atyp[1] = 'e'; atyp[2] = '\0';}
   else if (j == 13) {atyp[0] = 'C'; atyp[1] = 'd'; atyp[2] = 'z';}
   else if (j == 14) {atyp[0] = 'S'; atyp[1] = 'e'; atyp[2] = 'z';}
+  else if (j == 15) {atyp[0] = 'G'; atyp[1] = 'a'; atyp[2] = '\0';}
+  else if (j == 16) {atyp[0] = 'P'; atyp[1] = '\0'; atyp[2] = '\0';}
   return;
 }
 
 /*****************************************************************************/
+double retIdealBondLength(long natyp_1, long natyp_2, int crystalStructureInt)
+{
+  char strerror[100];
+  if (((natyp_1==0) && (natyp_2==1)) && (crystalStructureInt==0)) return(2.6326);  // CdSe, wz
+  else if (((natyp_1==1) && (natyp_2==0)) && (crystalStructureInt==0)) return(2.6326); 
+  else if (((natyp_1==0) && (natyp_2==1)) && (crystalStructureInt==1)) return(2.6233); // CdSe, zb
+  else if (((natyp_1==1) && (natyp_2==0)) && (crystalStructureInt==1)) return(2.6233); 
+  else if (((natyp_1==0) && (natyp_2==7)) && (crystalStructureInt==0)) return(2.5292); // CdS, wz
+  else if (((natyp_1==7) && (natyp_2==0)) && (crystalStructureInt==0)) return(2.5292); 
+  else if (((natyp_1==0) && (natyp_2==7)) && (crystalStructureInt==1)) return(2.5193); // CdS, zb
+  else if (((natyp_1==7) && (natyp_2==0)) && (crystalStructureInt==1)) return(2.5193); 
+  else if (((natyp_1==2) && (natyp_2==3)) && (crystalStructureInt==1)) return(2.6228); // InAs, zb
+  else if (((natyp_1==3) && (natyp_2==2)) && (crystalStructureInt==1)) return(2.6228); 
+  else if (((natyp_1==2) && (natyp_2==16)) && (crystalStructureInt==1)) return(2.5228); // InP, zb
+  else if (((natyp_1==16) && (natyp_2==2)) && (crystalStructureInt==1)) return(2.5228); 
+  else if (((natyp_1==15) && (natyp_2==3)) && (crystalStructureInt==1)) return(2.4480); // GaAs, zb
+  else if (((natyp_1==3) && (natyp_2==15)) && (crystalStructureInt==1)) return(2.4480); 
+  else if (((natyp_1==15) && (natyp_2==16)) && (crystalStructureInt==1)) return(2.36); // GaP, zb
+  else if (((natyp_1==16) && (natyp_2==15)) && (crystalStructureInt==1)) return(2.36); 
+  else {
+    sprintf (strerror,"Atom pair type %ld %ld with crystalStructureInt %d not in current list of bond lengths.",natyp_1, natyp_2, crystalStructureInt);
+    nerror (strerror);
+  }
+  return(0);
+}

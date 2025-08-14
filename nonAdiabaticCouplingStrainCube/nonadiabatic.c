@@ -153,13 +153,15 @@ void calcElPh(vector *Vab, vector *Vij, vector *dPotdR, atom *atoms, atom *atomN
     double rho;
     double *psiR, *psiS;
     vector sum, tmpVector;
-
+    
+    printf("In calcElPh, starting allocating memory.\n"); 
     // dynamically allocate memory
     nTotalPPValues = dAtomicPPGrid.nGridPoints*lPar.nSCAtomTypes;
     if ((potValues = (double *) calloc(nTotalPPValues, sizeof(double))) == NULL) memoryError("potValues");
     if ((potGridPointValues = (double *) calloc(nTotalPPValues, sizeof(double))) == NULL) memoryError("potGridPointValues");
     if ((dPotValues = (double *) calloc(nTotalPPValues, sizeof(double))) == NULL) memoryError("dPotValues");
     if ((dPotGridPointValues = (double *) calloc(nTotalPPValues, sizeof(double))) == NULL) memoryError("dPotGridPointValues");
+    printf("In calcElPh, finished with allocating memory. \n"); 
 
     // get potential grid points and values
     for (iGrid = 0; iGrid < nTotalPPValues; iGrid++) {
@@ -174,7 +176,7 @@ void calcElPh(vector *Vab, vector *Vij, vector *dPotdR, atom *atoms, atom *atomN
 
     // compute nonadiabatic matrix elements for each atom
     for (iAtom = 0; iAtom < lPar.nAtoms; iAtom++) {
-
+        printf("Atom number: %d \n", iAtom);
         if (isAPassivationSymbol(atoms[iAtom].symbol)) {
             continue;
         }
@@ -200,8 +202,7 @@ void calcElPh(vector *Vab, vector *Vij, vector *dPotdR, atom *atoms, atom *atomN
                 }
             }
 
-            // printf("Computing hole matrix elements\n");
-
+            printf("Starting to compute electron matrix elements\n");
             // calculate electron matrix elements
             for (iR = 0; iR < lPar.nElecs; iR++) {
                 psiR = elecQP[iR].psi;
@@ -238,8 +239,7 @@ void calcElPh(vector *Vab, vector *Vij, vector *dPotdR, atom *atoms, atom *atomN
                 }
             }
 
-            // printf("Computing hole matrix elements\n");
-
+            printf("Starting to compute hole matrix elements\n");
             // calculate hole matrix elements
             for (iR = 0; iR < lPar.nHoles; iR++) {
                 psiR = holeQP[iR].psi;
@@ -278,7 +278,9 @@ void calcElPh(vector *Vab, vector *Vij, vector *dPotdR, atom *atoms, atom *atomN
 
         }
     }
+    printf("Done compute nonadiabatic matrix elements for all atoms \n");
 
+    printf("Starting to write nonadiabatic matrix elements to files \n");
     if (lPar.nElecs > 0) {
         // write matrix elements to file
         pf = fopen("Vab-diabatic.dat", "w");
